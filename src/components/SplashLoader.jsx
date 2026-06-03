@@ -81,7 +81,7 @@ export default function SplashLoader({ onComplete, dwellMs = 2300 }) {
           width: '70vmax',
           height: '70vmax',
           filter: 'blur(72px)',
-          mixBlendMode: 'multiply',
+          mixBlendMode: 'screen',
           background:
             'radial-gradient(48% 48% at 36% 42%, rgba(255, 107, 53, 0.92), transparent 70%), radial-gradient(50% 52% at 70% 58%, rgba(0, 103, 71, 0.88), transparent 70%), radial-gradient(60% 60% at 50% 100%, rgba(10, 44, 95, 0.78), transparent 70%)'
         }}
@@ -99,7 +99,7 @@ export default function SplashLoader({ onComplete, dwellMs = 2300 }) {
           height: '24vmax',
           borderRadius: '50%',
           filter: 'blur(40px)',
-          mixBlendMode: 'multiply',
+          mixBlendMode: 'screen',
           background:
             'radial-gradient(50% 50% at 50% 50%, rgba(207, 196, 147, 0.85), transparent 70%)'
         }}

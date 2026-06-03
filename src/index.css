@@ -7,37 +7,39 @@
 /* ============================================================ */
 
 @theme {
-  /* Paper + ink */
-  --color-paper: #FFFFFF;
-  --color-paper-off: #F6F4EF;
-  --color-paper-deep: #F0EDE6;
-  --color-paper-recessed: #E6E2D8;
-  --color-ink: #0B0B0E;
-  --color-ink-soft: #2A2A30;
-  --color-ink-faint: #6B6B72;
-  --color-rule: #E6E2D8;
+  /* ---- Quiet-luxury dark canvas ---- */
+  /* "paper" is now obsidian (the surface), "ink" is now linen (the text).
+     Every bg-paper / text-ink usage in the app re-themes from these. */
+  --color-paper: #0B0C0E;          /* Deep obsidian canvas */
+  --color-paper-off: #101316;      /* Raised surface */
+  --color-paper-deep: #15191D;     /* Recessed panel */
+  --color-paper-recessed: #1C2127; /* Deep well */
+  --color-ink: #F4F1EB;            /* Tailored linen (display + body) */
+  --color-ink-soft: #BDB9B0;       /* Muted linen */
+  --color-ink-faint: #847F75;      /* Technical grey-linen */
+  --color-rule: #2B2F35;           /* Low-opacity structural grid line */
 
-  /* Deep blues (primary grounding) */
-  --color-navy: #0A2C5F;
-  --color-navy-deep: #061A3D;
-  --color-navy-soft: #1A3D75;
+  /* Deep blues — navy kept dark for panels, brighter for accents */
+  --color-navy: #3F6FB5;           /* Accent blue (legible on obsidian) */
+  --color-navy-deep: #16233C;      /* Deep navy panel (section backgrounds) */
+  --color-navy-soft: #6B93D4;
 
-  /* Vibrant orange (primary accent) */
+  /* Vibrant orange (warm primary accent) */
   --color-orange: #FF6B35;
   --color-orange-bright: #FF8451;
   --color-orange-deep: #E45528;
 
-  /* Signal green (secondary accent + interactive states) */
-  --color-volt: #006747;
-  --color-volt-deep: #00513A;
-  --color-volt-soft: #2F8B6C;
+  /* High-precision volt — telemetry / active / hover states */
+  --color-volt: #CDFF00;
+  --color-volt-deep: #A8D400;
+  --color-volt-soft: #E3FF66;
 
-  /* Warm sand / cream (warm light accent + hairlines) */
-  --color-amber: #CFC493;
-  --color-amber-deep: #B5A971;
-  --color-amber-wash: #F3EFE0;
+  /* Terminal gold — warm secondary accent + hairlines */
+  --color-amber: #D8B25E;
+  --color-amber-deep: #B1903F;
+  --color-amber-wash: #1B190F;     /* Dark gold-tinted panel (hover wash) */
 
-  /* Supporting hues */
+  /* Supporting hues (bright — read well on obsidian) */
   --color-teal: #3DC2C6;
   --color-pink: #FFB5C2;
   --color-pink-deep: #F088A0;
@@ -68,6 +70,7 @@
 
   /* Easing + animation tokens (v4 namespace) */
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
 
   --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -131,6 +134,55 @@
 /* ============================================================ */
 /*  Custom utilities                                             */
 /* ============================================================ */
+
+/* Hardware-accelerated macro film grain — fixed over the whole viewport.
+   screen blend so the noise reads as faint light flecks on the obsidian. */
+.grain-overlay {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent
+    url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E')
+    repeat;
+  opacity: 0.05;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Editorial margin frame — faint structural rules + corner crosshairs that
+   sit in the page gutters, evoking a technical print layout. */
+.frame-rule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-rule);
+  opacity: 0.7;
+}
+.frame-cross {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--color-ink-faint);
+  opacity: 0.55;
+  user-select: none;
+}
+
+/* Flowing-current dash loop for telemetry strokes */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay { display: none; }
+  [class*='dash-flow'] { animation: none !important; }
+}
 
 /* Hero mask cutout — asymmetric petal revealing the mesh gradient */
 .mask-petal {

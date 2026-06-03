@@ -114,7 +114,7 @@ export default function EditorialChart({
               style={{
                 background:
                   'linear-gradient(90deg, transparent 0%, rgba(0,103,71,0.10) 45%, rgba(0,103,71,0.18) 50%, rgba(0,103,71,0.10) 55%, transparent 100%)',
-                mixBlendMode: 'multiply'
+                mixBlendMode: 'screen'
               }}
               initial={{ x: '-120%' }}
               animate={{ x: ['-120%', '420%'] }}

@@ -15,6 +15,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
+      {/* Macro film grain over the whole viewport */}
+      <div aria-hidden="true" className="grain-overlay" />
+
+      {/* Editorial margin frame — gutter rules + corner crosshairs */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-40 hidden lg:block">
+        <div className="relative mx-auto h-full max-w-[1440px] px-6 lg:px-10">
+          <span className="frame-rule" style={{ left: '2.5rem' }} />
+          <span className="frame-rule" style={{ right: '2.5rem' }} />
+          <span className="frame-cross" style={{ left: '2.5rem', top: '88px', transform: 'translate(-50%,-50%)' }}>+</span>
+          <span className="frame-cross" style={{ right: '2.5rem', top: '88px', transform: 'translate(50%,-50%)' }}>+</span>
+          <span className="frame-cross" style={{ left: '2.5rem', bottom: '24px', transform: 'translate(-50%,50%)' }}>+</span>
+          <span className="frame-cross" style={{ right: '2.5rem', bottom: '24px', transform: 'translate(50%,50%)' }}>+</span>
+        </div>
+      </div>
+
       <AnimatePresence>
         {splashing && <SplashLoader onComplete={() => setSplashing(false)} />}
       </AnimatePresence>

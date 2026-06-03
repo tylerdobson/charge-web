@@ -73,7 +73,7 @@ export default function Findings() {
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div
           ref={shapeRef}
-          className="absolute -left-32 -top-24 w-[520px] h-[520px] rounded-full mix-blend-multiply will-change-transform"
+          className="absolute -left-32 -top-24 w-[520px] h-[520px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background:
               'radial-gradient(closest-side, rgba(0, 103, 71, 0.18), transparent 72%)',
@@ -81,7 +81,7 @@ export default function Findings() {
           }}
         />
         <div
-          className="absolute right-0 bottom-0 w-[320px] h-[320px] rounded-full mix-blend-multiply"
+          className="absolute right-0 bottom-0 w-[320px] h-[320px] rounded-full mix-blend-screen"
           style={{
             background:
               'radial-gradient(closest-side, rgba(255, 107, 53, 0.18), transparent 70%)'

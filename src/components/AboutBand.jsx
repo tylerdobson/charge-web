@@ -46,10 +46,10 @@ function Marquee({ direction = 'left' }) {
         animate={{ x: animX }}
         transition={{ duration: 48, ease: 'linear', repeat: Infinity }}
       >
-        <span className="font-display font-black uppercase tracking-[-0.04em] text-[clamp(110px,14vw,220px)] leading-none text-paper/[0.06] pr-12">
+        <span className="font-display font-black uppercase tracking-[-0.04em] text-[clamp(110px,14vw,220px)] leading-none text-ink/[0.06] pr-12">
           {block}
         </span>
-        <span className="font-display font-black uppercase tracking-[-0.04em] text-[clamp(110px,14vw,220px)] leading-none text-paper/[0.06] pr-12">
+        <span className="font-display font-black uppercase tracking-[-0.04em] text-[clamp(110px,14vw,220px)] leading-none text-ink/[0.06] pr-12">
           {block}
         </span>
       </motion.div>
@@ -59,7 +59,7 @@ function Marquee({ direction = 'left' }) {
 
 export default function AboutBand() {
   return (
-    <section id="about" className="relative bg-navy text-paper border-y border-ink overflow-hidden">
+    <section id="about" className="relative bg-navy-deep text-ink border-y border-rule overflow-hidden">
       {/* Top brand strip */}
       <motion.div
         aria-hidden="true"
@@ -112,7 +112,7 @@ export default function AboutBand() {
 
             <motion.h2
               variants={fadeUp}
-              className="font-display font-black uppercase tracking-[-0.05em] leading-[0.92] text-display-lg text-paper"
+              className="font-display font-black uppercase tracking-[-0.05em] leading-[0.92] text-display-lg text-ink"
             >
               Charge<br />
               <span className="text-amber">Frontier.</span>
@@ -120,7 +120,7 @@ export default function AboutBand() {
 
             <motion.p
               variants={fadeUp}
-              className="mt-8 max-w-[52ch] text-lg lg:text-xl text-paper/85 leading-relaxed"
+              className="mt-8 max-w-[52ch] text-lg lg:text-xl text-ink/85 leading-relaxed"
             >
               <span className="text-amber font-semibold">Charge Frontier</span> is an interactive
               strategy-report design — a front-end portfolio piece. The brand, the analyst, the
@@ -130,7 +130,7 @@ export default function AboutBand() {
 
             <motion.p
               variants={fadeUp}
-              className="mt-5 max-w-[52ch] text-base text-paper/70 leading-relaxed"
+              className="mt-5 max-w-[52ch] text-base text-ink/70 leading-relaxed"
             >
               Built with React, Vite, Tailwind, Framer Motion, and Recharts: multi-page routing,
               scroll-reveal choreography, count-up stats, in-viewport editorial charts, and an intro
@@ -140,7 +140,7 @@ export default function AboutBand() {
             <motion.div className="mt-10 flex flex-wrap gap-3" variants={fadeUp}>
               <a
                 href={`mailto:${site.email}`}
-                className="group inline-flex items-center gap-2 bg-orange text-paper px-6 h-[52px] font-display font-bold text-sm uppercase tracking-[0.08em] border border-orange hover:bg-orange-deep hover:border-orange-deep transition-colors duration-200 ease-[var(--ease-in-out-soft)]"
+                className="group inline-flex items-center gap-2 bg-orange text-ink px-6 h-[52px] font-display font-bold text-sm uppercase tracking-[0.08em] border border-orange hover:bg-orange-deep hover:border-orange-deep transition-colors duration-200 ease-[var(--ease-in-out-soft)]"
               >
                 {site.email}
                 <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
@@ -149,7 +149,7 @@ export default function AboutBand() {
                 href={site.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-transparent text-paper px-6 h-[52px] font-display font-bold text-sm uppercase tracking-[0.08em] border border-paper hover:bg-volt hover:border-volt transition-colors duration-200 ease-[var(--ease-in-out-soft)]"
+                className="inline-flex items-center gap-2 bg-transparent text-ink px-6 h-[52px] font-display font-bold text-sm uppercase tracking-[0.08em] border border-ink hover:bg-volt hover:border-volt transition-colors duration-200 ease-[var(--ease-in-out-soft)]"
               >
                 Source
               </a>
@@ -162,18 +162,18 @@ export default function AboutBand() {
             whileInView="show"
             viewport={{ once: true, amount: 0.15 }}
             variants={factsStagger}
-            className="grid grid-cols-2 border border-paper/20"
+            className="grid grid-cols-2 border border-ink/20"
           >
             {FACTS.map(([label, value], i) => (
               <motion.div
                 key={label}
                 variants={factCell}
-                className={`p-5 lg:p-6 ${i % 2 === 1 ? 'border-l border-paper/20' : ''} ${i >= 2 ? 'border-t border-paper/20' : ''}`}
+                className={`p-5 lg:p-6 ${i % 2 === 1 ? 'border-l border-ink/20' : ''} ${i >= 2 ? 'border-t border-ink/20' : ''}`}
               >
-                <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/55">
+                <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
                   {label}
                 </dt>
-                <dd className="mt-2 font-display font-semibold text-base lg:text-lg text-paper">
+                <dd className="mt-2 font-display font-semibold text-base lg:text-lg text-ink">
                   {value}
                 </dd>
               </motion.div>
@@ -187,7 +187,7 @@ export default function AboutBand() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="mt-16 lg:mt-20 grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] items-center gap-8 lg:gap-12 p-6 lg:p-8 bg-paper/[0.04] border border-amber/30"
+          className="mt-16 lg:mt-20 grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] items-center gap-8 lg:gap-12 p-6 lg:p-8 bg-ink/[0.04] border border-amber/30"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-volt flex items-center justify-center">
@@ -197,13 +197,13 @@ export default function AboutBand() {
               <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-amber">
                 Demo notice
               </div>
-              <div className="mt-1 font-display font-bold text-xl text-paper">
+              <div className="mt-1 font-display font-bold text-xl text-ink">
                 Fictional sample data
               </div>
             </div>
           </div>
 
-          <p className="text-[15px] leading-relaxed text-paper/75 max-w-[58ch]">
+          <p className="text-[15px] leading-relaxed text-ink/75 max-w-[58ch]">
             Voltway Networks is not a real company. Every metro figure, partner name, Coverage Index,
             and growth rate in this report was invented to exercise the layout. Nothing here represents
             real market data or any real organization — it exists purely to demonstrate the design and
@@ -214,7 +214,7 @@ export default function AboutBand() {
             <span className="inline-block font-mono text-[10px] uppercase tracking-[0.16em] text-amber border border-amber px-3 py-1">
               Demo · 2026
             </span>
-            <span className="inline-block font-mono text-[10px] uppercase tracking-[0.16em] text-paper border border-paper/40 px-3 py-1">
+            <span className="inline-block font-mono text-[10px] uppercase tracking-[0.16em] text-ink border border-ink/40 px-3 py-1">
               Fictional data
             </span>
           </div>

@@ -61,7 +61,7 @@ export default function Maps() {
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div
           ref={shapeRef}
-          className="absolute -right-32 top-1/4 w-[480px] h-[480px] rounded-full mix-blend-multiply will-change-transform"
+          className="absolute -right-32 top-1/4 w-[480px] h-[480px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background:
               'radial-gradient(closest-side, rgba(61, 194, 198, 0.20), transparent 72%)',

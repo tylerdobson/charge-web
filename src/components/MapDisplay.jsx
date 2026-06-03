@@ -101,7 +101,7 @@ function GrainOverlay({ opacity = 0.4 }) {
     <svg
       aria-hidden="true"
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ mixBlendMode: 'multiply', opacity }}
+      style={{ mixBlendMode: 'screen', opacity }}
     >
       <filter id="film-grain">
         <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
@@ -228,7 +228,7 @@ export default function MapDisplay({
           src={src}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ mixBlendMode: 'multiply' }}
+          style={{ mixBlendMode: 'screen' }}
         />
       ) : (
         <TopoBase />

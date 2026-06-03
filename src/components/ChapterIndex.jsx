@@ -36,7 +36,7 @@ export default function ChapterIndex() {
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div
           ref={shapeRef}
-          className="absolute -right-24 top-1/2 w-[420px] h-[420px] -translate-y-1/2 rounded-full mix-blend-multiply will-change-transform"
+          className="absolute -right-24 top-1/2 w-[420px] h-[420px] -translate-y-1/2 rounded-full mix-blend-screen will-change-transform"
           style={{
             background:
               'radial-gradient(closest-side, rgba(207, 196, 147, 0.45), transparent 72%)',

@@ -105,7 +105,7 @@ export default function Hero() {
       {/* Mouse-reactive mesh wash */}
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0 z-0 pointer-events-none mix-blend-multiply"
+        className="absolute inset-0 z-0 pointer-events-none mix-blend-screen"
         style={{ background: meshBg, opacity: 0.6 }}
       />
 
@@ -113,7 +113,7 @@ export default function Hero() {
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0">
         <div
           ref={blob1}
-          className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full mix-blend-multiply will-change-transform"
+          className="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background: 'radial-gradient(closest-side, rgba(255, 107, 53, 0.55), transparent 75%)',
             transform: 'translate3d(0, var(--parallax-y, 0px), 0)'
@@ -121,7 +121,7 @@ export default function Hero() {
         />
         <div
           ref={blob2}
-          className="absolute top-1/3 -right-32 w-[640px] h-[640px] rounded-full mix-blend-multiply will-change-transform"
+          className="absolute top-1/3 -right-32 w-[640px] h-[640px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background: 'radial-gradient(closest-side, rgba(255, 181, 194, 0.65), transparent 72%)',
             transform: 'translate3d(0, var(--parallax-y, 0px), 0)'
@@ -129,7 +129,7 @@ export default function Hero() {
         />
         <div
           ref={blob3}
-          className="absolute bottom-[-220px] left-1/4 w-[760px] h-[760px] rounded-full mix-blend-multiply will-change-transform"
+          className="absolute bottom-[-220px] left-1/4 w-[760px] h-[760px] rounded-full mix-blend-screen will-change-transform"
           style={{
             background: 'radial-gradient(closest-side, rgba(0, 103, 71, 0.32), transparent 70%)',
             transform: 'translate3d(0, var(--parallax-y, 0px), 0)'
