@@ -1,21 +1,21 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion
+} from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { site } from '../data/portfolio.js';
 import { useParallax } from '../hooks/useParallax.js';
 import MagneticButton from './MagneticButton.jsx';
 
-const lineReveal = {
-  hidden: { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
-  show: {
-    clipPath: 'inset(0 0% 0 0)',
-    opacity: 1,
-    transition: { duration: 0.95, ease: [0.65, 0, 0.35, 1] }
-  }
-};
+const EDITORIAL = [0.16, 1, 0.3, 1];
 
 const cascade = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EDITORIAL } }
 };
 
 const stagger = {
@@ -28,17 +28,88 @@ const eyebrowStagger = {
   show: { transition: { staggerChildren: 0.06, delayChildren: 0.0 } }
 };
 
+/* Per-character clip reveal: each glyph translates up from a hidden clip with
+   a slight rotate + tracking expansion, staggered by index. Honors reduced
+   motion by rendering plain text. */
+const charVariant = {
+  hidden: { y: '105%', rotate: 4, letterSpacing: '-0.08em' },
+  show: (i) => ({
+    y: '0%',
+    rotate: 0,
+    letterSpacing: '0em',
+    transition: { ease: EDITORIAL, duration: 1.2, delay: 0.15 + i * 0.025 }
+  })
+};
+
+function SplitText({ text, className = '', delayOffset = 0 }) {
+  const reduce = useReducedMotion();
+  if (reduce) return <span className={className}>{text}</span>;
+  const chars = Array.from(text);
+  return (
+    <span className={className} aria-label={text}>
+      {chars.map((ch, i) => (
+        <span key={`${ch}-${i}`} className="clip-text-container" aria-hidden="true">
+          <motion.span
+            className="reveal-char"
+            custom={i + delayOffset}
+            variants={charVariant}
+            initial="hidden"
+            animate="show"
+          >
+            {ch === ' ' ? ' ' : ch}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function Hero() {
+  const reduce = useReducedMotion();
+  const sectionRef = useRef(null);
   const blob1 = useParallax(0.14);
   const blob2 = useParallax(0.22);
   const blob3 = useParallax(0.08);
 
+  // Mouse-reactive mesh: track cursor as a 0–100% coordinate, smoothed with a
+  // spring so the gradient warp trails the cursor with weight.
+  const mx = useMotionValue(50);
+  const my = useMotionValue(50);
+  const sx = useSpring(mx, { stiffness: 60, damping: 22, mass: 1 });
+  const sy = useSpring(my, { stiffness: 60, damping: 22, mass: 1 });
+
+  const meshBg = useTransform([sx, sy], ([x, y]) =>
+    `radial-gradient(38% 46% at ${x}% ${y}%, rgba(0, 103, 71, 0.42), transparent 60%),` +
+    `radial-gradient(42% 50% at ${100 - x}% ${100 - y}%, rgba(255, 107, 53, 0.34), transparent 62%)`
+  );
+  // Subtle petal drift toward the cursor.
+  const petalX = useTransform(sx, [0, 100], [-2.5, 2.5]);
+  const petalY = useTransform(sy, [0, 100], [-2, 2]);
+
+  const handleMove = (e) => {
+    if (reduce) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    mx.set(((e.clientX - r.left) / r.width) * 100);
+    my.set(((e.clientY - r.top) / r.height) * 100);
+  };
+
   return (
     <section
       id="top"
+      ref={sectionRef}
+      onMouseMove={handleMove}
       className="relative overflow-hidden bg-paper border-b border-ink paper-grain"
     >
-      {/* Parallax orb backdrop (unchanged behavior, kept for consistency) */}
+      {/* Mouse-reactive mesh wash */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 pointer-events-none mix-blend-multiply"
+        style={{ background: meshBg, opacity: 0.6 }}
+      />
+
+      {/* Parallax orb backdrop */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0">
         <div
           ref={blob1}
@@ -98,18 +169,14 @@ export default function Hero() {
               A working strategy report &middot; Week 2 of 10
             </motion.div>
 
-            {/* Clip-path line-by-line headline */}
+            {/* Per-character clip-reveal headline */}
             <h1 className="font-display font-black uppercase tracking-[-0.05em] leading-[0.88] text-display-xl text-ink">
-              <motion.span className="block overflow-hidden">
-                <motion.span className="block" variants={lineReveal}>
-                  Charge
-                </motion.span>
-              </motion.span>
-              <motion.span className="block overflow-hidden">
-                <motion.span className="block text-orange" variants={lineReveal}>
-                  Frontier.
-                </motion.span>
-              </motion.span>
+              <span className="block">
+                <SplitText text="Charge" />
+              </span>
+              <span className="block text-orange">
+                <SplitText text="Frontier." delayOffset={6} />
+              </span>
             </h1>
 
             <motion.p
@@ -163,17 +230,18 @@ export default function Hero() {
             </motion.dl>
           </div>
 
-          {/* Mask cutout with breathing mesh */}
+          {/* Mask cutout with breathing mesh that drifts toward the cursor */}
           <motion.div
             className="relative h-[480px] lg:h-[560px] w-full"
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+            transition={{ duration: 0.85, ease: EDITORIAL, delay: 0.25 }}
           >
-            <div
+            <motion.div
               className="absolute inset-0 mask-petal overflow-hidden"
               role="img"
               aria-label="Abstract mesh gradient in orange, pink, and teal masked into an asymmetric petal shape"
+              style={{ x: petalX, y: petalY }}
             >
               <motion.div
                 className="absolute inset-[-8%] mesh-warm"
@@ -189,7 +257,7 @@ export default function Hero() {
                   repeatType: 'loop'
                 }}
               />
-            </div>
+            </motion.div>
             <div
               aria-hidden="true"
               className="absolute -inset-4 mask-petal border-2 border-ink -z-10"
@@ -199,7 +267,7 @@ export default function Hero() {
               className="absolute left-6 bottom-6 z-20 bg-ink text-paper px-4 py-3 max-w-[16ch] border-l-2 border-amber"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 1.1 }}
+              transition={{ duration: 0.7, ease: EDITORIAL, delay: 1.1 }}
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-orange">
                 Working thesis

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 /**
  * High-contrast map placeholder. Drops in a topographic SVG base when no
@@ -10,9 +10,14 @@ import { motion } from 'framer-motion';
  * eventual real map.
  *
  *   kind: 'mill'   — navy square, no ping (fixed asset)
- *         'metro'  — orange dot + radar ping (key location)
- *         'route'  — amber small dot (waypoint)
+ *         'metro'  — orange dot + live radar telemetry (key location)
+ *         'route'  — amber small dot + telemetry (waypoint)
  */
+
+const TELEMETRY_COLOR = {
+  metro: { ring: 'rgba(255,107,53,0.7)', beam: 'rgba(255,107,53,0.6)' },
+  route: { ring: 'rgba(207,196,147,0.65)', beam: 'rgba(207,196,147,0.55)' }
+};
 
 const DOT_STYLES = {
   mill: {
@@ -113,24 +118,46 @@ function GrainOverlay({ opacity = 0.4 }) {
 }
 
 function Marker({ x, y, kind = 'metro', label, ping = true }) {
+  const reduce = useReducedMotion();
   const s = DOT_STYLES[kind] || DOT_STYLES.metro;
+  const telemetry = ping && s.ring ? TELEMETRY_COLOR[kind] || TELEMETRY_COLOR.metro : null;
+  const live = telemetry && !reduce;
   return (
     <div
       className="absolute"
       style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
     >
-      {/* Radar ping */}
-      {ping && s.ring && (
-        <span
-          aria-hidden="true"
-          className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full ${s.ring} animate-ping`}
-          style={{ animationDuration: '2.6s' }}
-        />
+      {/* Live radar telemetry — three stacked layers */}
+      {live && (
+        <>
+          {/* Layer 3 — rotating directional sweep beam */}
+          <motion.span
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full"
+            style={{
+              background: `conic-gradient(from 0deg, ${telemetry.beam} 0deg, transparent 70deg)`,
+              maskImage: 'radial-gradient(circle, transparent 26%, #000 28%)',
+              WebkitMaskImage: 'radial-gradient(circle, transparent 26%, #000 28%)'
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 6, ease: 'linear', repeat: Infinity }}
+          />
+          {/* Layer 2 — expanding sweep ring */}
+          <motion.span
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2"
+            style={{ borderColor: telemetry.ring }}
+            animate={{ scale: [1, 3.4], opacity: [0.8, 0] }}
+            transition={{ duration: 2.2, ease: 'easeOut', repeat: Infinity }}
+          />
+        </>
       )}
-      {/* Solid dot */}
-      <span
+      {/* Layer 1 — breathing core dot */}
+      <motion.span
         aria-hidden="true"
-        className={`block ${s.dot} rounded-full border border-ink ring-2 ring-paper`}
+        className={`relative block ${s.dot} rounded-full border border-ink ring-2 ring-paper`}
+        animate={live ? { scale: [0.95, 1.06, 0.95] } : undefined}
+        transition={live ? { duration: 2.4, ease: 'easeInOut', repeat: Infinity } : undefined}
       />
       {/* Label tag */}
       {label && (

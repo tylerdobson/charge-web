@@ -1,8 +1,13 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { findings } from '../data/portfolio.js';
 import { useReveal } from '../hooks/useReveal.js';
 import { useParallax } from '../hooks/useParallax.js';
 import EditorialChart from './EditorialChart.jsx';
+import AnimatedGridFrame from './AnimatedGridFrame.jsx';
+
+const EDITORIAL = [0.16, 1, 0.3, 1];
+const HEAVY_SPRING = { type: 'spring', stiffness: 180, damping: 26, mass: 1 };
 
 const FIG_SOUTH_SHARE = [
   { label: 'South', value: 45, color: 'orange' },
@@ -53,9 +58,11 @@ const SOURCES = {
 };
 
 export default function Findings() {
+  const reduce = useReducedMotion();
   const headRef = useReveal();
   const listRef = useReveal({ threshold: 0.06 });
   const shapeRef = useParallax(0.08);
+  const [hovered, setHovered] = useState(null);
 
   return (
     <section
@@ -114,61 +121,101 @@ export default function Findings() {
           </div>
         </div>
 
-        {/* Findings 2x2 grid */}
-        <ol
-          ref={listRef}
-          className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-px bg-rule border border-ink"
-        >
-          {findings.map((f) => (
-            <li
-              key={f.id}
-              id={`finding-${f.id}`}
-              className="card-hover relative bg-paper p-6 lg:p-8 flex flex-col gap-5 transition-all duration-200 ease-[var(--ease-in-out-soft)]"
-            >
-              <span
-                aria-hidden="true"
-                className={`absolute top-0 left-0 right-0 h-1.5 ${ACCENT_BAR[f.accent]}`}
-              />
-
-              <div className="flex items-baseline justify-between gap-4">
-                <span
-                  className={`font-display font-black tracking-[-0.05em] leading-none text-[clamp(72px,9vw,128px)] ${ACCENT_TEXT[f.accent]}`}
+        {/* Findings 2x2 grid — gap-0 seams framed by animated SVG vectors;
+            hovering a card morphs the matrix (scale up, siblings dim). */}
+        <div className="relative">
+          <motion.ol
+            ref={listRef}
+            onMouseLeave={() => setHovered(null)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-0 bg-paper"
+          >
+            {findings.map((f, idx) => {
+              const isHover = hovered === idx;
+              const isDim = hovered !== null && !isHover;
+              return (
+                <motion.li
+                  key={f.id}
+                  id={`finding-${f.id}`}
+                  layout
+                  initial={reduce ? false : { opacity: 0, y: 24 }}
+                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.7, ease: EDITORIAL, delay: idx * 0.06 }}
+                  onMouseEnter={() => setHovered(idx)}
+                  onFocusCapture={() => setHovered(idx)}
+                  className="relative"
+                  style={{ zIndex: isHover ? 20 : 1 }}
                 >
-                  {f.number}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
-                  Finding · 03/0{Number(f.number)}
-                </span>
-              </div>
+                  <motion.div
+                    animate={
+                      reduce
+                        ? undefined
+                        : {
+                            scale: isHover ? 1.015 : 1,
+                            opacity: isDim ? 0.4 : 1,
+                            filter: isDim ? 'grayscale(0.55)' : 'grayscale(0)'
+                          }
+                    }
+                    transition={HEAVY_SPRING}
+                    className="relative h-full bg-paper p-6 lg:p-8 flex flex-col gap-5"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`absolute top-0 left-0 right-0 h-1.5 ${ACCENT_BAR[f.accent]}`}
+                    />
 
-              <h3 className="font-display font-bold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.6vw,34px)] text-ink max-w-[28ch]">
-                {f.title}
-              </h3>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span
+                        className={`font-display font-black tracking-[-0.05em] leading-none text-[clamp(72px,9vw,128px)] ${ACCENT_TEXT[f.accent]}`}
+                      >
+                        {f.number}
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+                        Finding · 03/0{Number(f.number)}
+                      </span>
+                    </div>
 
-              <p className="text-[16px] leading-relaxed text-ink-soft max-w-[54ch]">
-                {f.body}
-              </p>
+                    <h3 className="font-display font-bold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.6vw,34px)] text-ink max-w-[28ch]">
+                      {f.title}
+                    </h3>
 
-              {/* Sparkbar — visual proof indicator */}
-              <div className="mt-2 flex items-end gap-1 h-12" aria-hidden="true">
-                {[0.35, 0.55, 0.45, 0.7, 0.6, 0.85, 0.78, 0.95].map((h, idx) => (
-                  <span
-                    key={idx}
-                    className={`w-[8px] ${ACCENT_BAR[f.accent]} opacity-80`}
-                    style={{ height: `${h * 100}%` }}
-                  />
-                ))}
-                <span className="ml-2 self-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
-                  Trend · TTM
-                </span>
-              </div>
+                    <p className="text-[16px] leading-relaxed text-ink-soft max-w-[54ch]">
+                      {f.body}
+                    </p>
 
-              <div className="mt-auto pt-3 border-t border-rule font-mono text-[11px] uppercase tracking-[0.14em] text-ink-faint">
-                {SOURCES[f.id]}
-              </div>
-            </li>
-          ))}
-        </ol>
+                    {/* Sparkbar — visual proof indicator */}
+                    <div className="mt-2 flex items-end gap-1 h-12" aria-hidden="true">
+                      {[0.35, 0.55, 0.45, 0.7, 0.6, 0.85, 0.78, 0.95].map((hgt, i) => (
+                        <span
+                          key={i}
+                          className={`w-[8px] ${ACCENT_BAR[f.accent]} opacity-80`}
+                          style={{ height: `${hgt * 100}%` }}
+                        />
+                      ))}
+                      <span className="ml-2 self-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+                        Trend · TTM
+                      </span>
+                    </div>
+
+                    <div className="mt-auto pt-3 border-t border-rule font-mono text-[11px] uppercase tracking-[0.14em] text-ink-faint">
+                      {SOURCES[f.id]}
+                    </div>
+
+                    {/* Hover border sweep: rule → volt */}
+                    <motion.span
+                      aria-hidden="true"
+                      className="absolute inset-0 border-2 border-volt pointer-events-none"
+                      initial={false}
+                      animate={{ opacity: isHover && !reduce ? 1 : 0 }}
+                      transition={{ duration: 0.25, ease: EDITORIAL }}
+                    />
+                  </motion.div>
+                </motion.li>
+              );
+            })}
+          </motion.ol>
+          <AnimatedGridFrame gridRef={listRef} />
+        </div>
 
         {/* Editorial charts — one fig per finding */}
         <div className="mt-16">
@@ -176,7 +223,7 @@ export default function Findings() {
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.1, ease: EDITORIAL }}
             style={{ originX: 0 }}
             className="h-[2px] bg-ink mb-6"
             aria-hidden="true"

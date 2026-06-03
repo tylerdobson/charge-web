@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   Bar,
   BarChart,
@@ -78,6 +78,7 @@ export default function EditorialChart({
   ariaLabel
 }) {
   const wrapRef = useRef(null);
+  const reduce = useReducedMotion();
   const inView = useInView(wrapRef, { once: true, amount: 0.25 });
 
   const accessibleSummary = ariaLabel ||
@@ -103,7 +104,23 @@ export default function EditorialChart({
           )}
         </div>
 
-        <div style={{ height }} className="px-3 pt-6 pb-2">
+        <div style={{ height }} className="relative overflow-hidden px-3 pt-6 pb-2">
+          {/* Ambient telemetry sweep — a slow scanning band that keeps the
+              chart feeling live without touching the underlying data. */}
+          {inView && !reduce && (
+            <motion.div
+              aria-hidden="true"
+              className="absolute inset-y-2 left-0 w-1/3 pointer-events-none z-10"
+              style={{
+                background:
+                  'linear-gradient(90deg, transparent 0%, rgba(0,103,71,0.10) 45%, rgba(0,103,71,0.18) 50%, rgba(0,103,71,0.10) 55%, transparent 100%)',
+                mixBlendMode: 'multiply'
+              }}
+              initial={{ x: '-120%' }}
+              animate={{ x: ['-120%', '420%'] }}
+              transition={{ duration: 5.5, ease: 'linear', repeat: Infinity, repeatDelay: 1.4 }}
+            />
+          )}
           {inView ? (
             <ResponsiveContainer width="100%" height="100%">
               {type === 'line' ? (

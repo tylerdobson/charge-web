@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { metros, findings, deliverables, filterChips } from '../data/portfolio.js';
 import { useReveal } from '../hooks/useReveal.js';
+
+const HEAVY_SPRING = { type: 'spring', stiffness: 180, damping: 26, mass: 1 };
 
 const ACCENT_BG = {
   navy: 'bg-navy',
@@ -43,19 +45,28 @@ const gridStagger = {
 };
 
 function Card({ children, focus, dimmed, idAttr, span, onMouseEnter, onFocus }) {
+  const reduce = useReducedMotion();
+  // Matrix morph: the focused card lifts + scales up while siblings dim and
+  // desaturate. Heavy layout spring keeps the spatial shift fluid.
+  const animate = reduce
+    ? 'show'
+    : dimmed
+    ? { opacity: 0.35, scale: 0.99, y: 0, filter: 'grayscale(0.6)', transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }
+    : focus
+    ? { opacity: 1, scale: 1.015, y: -3, filter: 'grayscale(0)', transition: HEAVY_SPRING }
+    : 'show';
   return (
     <motion.article
       id={idAttr}
       layout
       variants={cardEnter}
       initial="hidden"
-      animate={dimmed ? { opacity: 0.45, scale: 0.985, transition: { duration: 0.25 } } : 'show'}
+      animate={animate}
       exit="exit"
-      whileHover={focus ? { y: -3 } : undefined}
       onMouseEnter={onMouseEnter}
       onFocus={onFocus}
-      className={`relative flex flex-col bg-paper border border-rule transition-[border-color,background-color] duration-200 ease-[var(--ease-in-out-soft)] ${
-        focus ? 'border-ink' : ''
+      className={`relative flex flex-col bg-paper border transition-[border-color] duration-200 ease-[var(--ease-in-out-soft)] ${
+        focus ? 'border-volt' : 'border-rule'
       } ${span || ''}`}
     >
       {children}

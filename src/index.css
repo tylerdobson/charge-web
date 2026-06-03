@@ -182,6 +182,33 @@
 }
 
 /* ============================================================ */
+/*  Kinetic typography — character-split clip reveals           */
+/* ============================================================ */
+
+/* Wraps a single character so its inner span can translate up from a
+   hidden clip. display:inline-block keeps the clip tight to the glyph. */
+.clip-text-container {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  line-height: inherit;
+}
+
+.clip-text-container .reveal-char {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform;
+}
+
+/* Reduced motion: never translate glyphs out of view */
+@media (prefers-reduced-motion: reduce) {
+  .clip-text-container { overflow: visible; }
+  .clip-text-container .reveal-char {
+    transform: none !important;
+  }
+}
+
+/* ============================================================ */
 /*  Reveal-on-scroll classes (driven by useReveal hook)         */
 /* ============================================================ */
 

@@ -1,6 +1,7 @@
 import { chapters } from '../data/portfolio.js';
 import { useReveal } from '../hooks/useReveal.js';
 import { useParallax } from '../hooks/useParallax.js';
+import AnimatedGridFrame from './AnimatedGridFrame.jsx';
 
 const ACCENT_TEXT = {
   orange: 'text-orange',
@@ -65,11 +66,13 @@ export default function ChapterIndex() {
           </h2>
         </div>
 
-        {/* Chapter grid — 8 cells, ledger style */}
-        <ol
-          ref={gridRef}
-          className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-rule border border-ink"
-        >
+        {/* Chapter grid — 8 cells, ledger style. Borders are drawn as
+            animated SVG vectors over the gap-0 seams (AnimatedGridFrame). */}
+        <div className="relative">
+          <ol
+            ref={gridRef}
+            className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0"
+          >
           {chapters.map((chapter) => (
             <li key={chapter.number} className="bg-paper">
               <a
@@ -108,7 +111,9 @@ export default function ChapterIndex() {
               </a>
             </li>
           ))}
-        </ol>
+          </ol>
+          <AnimatedGridFrame gridRef={gridRef} />
+        </div>
       </div>
     </section>
   );
