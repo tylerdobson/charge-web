@@ -1,7 +1,9 @@
+import { motion, useReducedMotion } from 'framer-motion';
 import { chapters } from '../data/portfolio.js';
 import { useReveal } from '../hooks/useReveal.js';
 import { useParallax } from '../hooks/useParallax.js';
 import AnimatedGridFrame from './AnimatedGridFrame.jsx';
+import { useVelocitySkew } from '../hooks/useVelocitySkew.js';
 
 const ACCENT_TEXT = {
   orange: 'text-orange',
@@ -22,9 +24,11 @@ const ACCENT_BAR = {
 };
 
 export default function ChapterIndex() {
+  const reduce = useReducedMotion();
   const headRef = useReveal();
   const gridRef = useReveal({ threshold: 0.04 });
   const shapeRef = useParallax(0.06);
+  const skewY = useVelocitySkew();
 
   return (
     <section
@@ -68,7 +72,10 @@ export default function ChapterIndex() {
 
         {/* Chapter grid — 8 cells, ledger style. Borders are drawn as
             animated SVG vectors over the gap-0 seams (AnimatedGridFrame). */}
-        <div className="relative">
+        <motion.div
+          className="relative will-change-transform"
+          style={reduce ? undefined : { skewY }}
+        >
           <ol
             ref={gridRef}
             className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0"
@@ -113,7 +120,7 @@ export default function ChapterIndex() {
           ))}
           </ol>
           <AnimatedGridFrame gridRef={gridRef} />
-        </div>
+        </motion.div>
       </div>
     </section>
   );

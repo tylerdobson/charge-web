@@ -5,9 +5,16 @@ import { useReveal } from '../hooks/useReveal.js';
 import { useParallax } from '../hooks/useParallax.js';
 import EditorialChart from './EditorialChart.jsx';
 import AnimatedGridFrame from './AnimatedGridFrame.jsx';
+import { useVelocitySkew } from '../hooks/useVelocitySkew.js';
 
 const EDITORIAL = [0.16, 1, 0.3, 1];
 const HEAVY_SPRING = { type: 'spring', stiffness: 180, damping: 26, mass: 1 };
+
+// Left-to-right clip wipe for card text blocks (replaces opacity fades).
+const clipReveal = {
+  hidden: { clipPath: 'inset(0 100% 0 0)' },
+  show: { clipPath: 'inset(0 0% 0 0)', transition: { ease: EDITORIAL, duration: 1.0 } }
+};
 
 const FIG_SOUTH_SHARE = [
   { label: 'South', value: 45, color: 'orange' },
@@ -62,6 +69,7 @@ export default function Findings() {
   const headRef = useReveal();
   const listRef = useReveal({ threshold: 0.06 });
   const shapeRef = useParallax(0.08);
+  const skewY = useVelocitySkew();
   const [hovered, setHovered] = useState(null);
 
   return (
@@ -122,8 +130,12 @@ export default function Findings() {
         </div>
 
         {/* Findings 2x2 grid — gap-0 seams framed by animated SVG vectors;
-            hovering a card morphs the matrix (scale up, siblings dim). */}
-        <div className="relative">
+            hovering a card morphs the matrix (scale up, siblings dim). The
+            whole matrix + frame skew together with scroll velocity. */}
+        <motion.div
+          className="relative will-change-transform"
+          style={reduce ? undefined : { skewY }}
+        >
           <motion.ol
             ref={listRef}
             onMouseLeave={() => setHovered(null)}
@@ -175,13 +187,26 @@ export default function Findings() {
                       </span>
                     </div>
 
-                    <h3 className="font-display font-bold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.6vw,34px)] text-ink max-w-[28ch]">
+                    <motion.h3
+                      variants={clipReveal}
+                      initial={reduce ? false : 'hidden'}
+                      whileInView={reduce ? undefined : 'show'}
+                      viewport={{ once: true, amount: 0.6 }}
+                      className="font-display font-bold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.6vw,34px)] text-ink max-w-[28ch]"
+                    >
                       {f.title}
-                    </h3>
+                    </motion.h3>
 
-                    <p className="text-[16px] leading-relaxed text-ink-soft max-w-[54ch]">
+                    <motion.p
+                      variants={clipReveal}
+                      initial={reduce ? false : 'hidden'}
+                      whileInView={reduce ? undefined : 'show'}
+                      viewport={{ once: true, amount: 0.6 }}
+                      transition={{ delay: 0.08 }}
+                      className="text-[16px] leading-relaxed text-ink-soft max-w-[54ch]"
+                    >
                       {f.body}
-                    </p>
+                    </motion.p>
 
                     {/* Sparkbar — visual proof indicator */}
                     <div className="mt-2 flex items-end gap-1 h-12" aria-hidden="true">
@@ -215,7 +240,7 @@ export default function Findings() {
             })}
           </motion.ol>
           <AnimatedGridFrame gridRef={listRef} />
-        </div>
+        </motion.div>
 
         {/* Editorial charts — one fig per finding */}
         <div className="mt-16">

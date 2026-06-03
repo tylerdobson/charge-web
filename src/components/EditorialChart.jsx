@@ -121,6 +121,28 @@ export default function EditorialChart({
               transition={{ duration: 5.5, ease: 'linear', repeat: Infinity, repeatDelay: 1.4 }}
             />
           )}
+          {/* Flowing-current telemetry line along the chart baseline */}
+          {inView && (
+            <svg
+              aria-hidden="true"
+              className="absolute inset-x-3 bottom-3 z-10 h-3 pointer-events-none"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 4"
+            >
+              <line
+                x1="0"
+                y1="2"
+                x2="100"
+                y2="2"
+                stroke="var(--color-volt)"
+                strokeWidth="0.6"
+                strokeDasharray="3 5"
+                vectorEffect="non-scaling-stroke"
+                opacity="0.5"
+                className="animate-[dash-flow_2.5s_linear_infinite]"
+              />
+            </svg>
+          )}
           {inView ? (
             <ResponsiveContainer width="100%" height="100%">
               {type === 'line' ? (
