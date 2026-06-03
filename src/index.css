@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+/* ============================================================ */
+/*  CSS-first theme — Tailwind v4 @theme block                  */
+/*  Tokens here become utilities automatically                  */
+/*  (--color-* → bg-*, text-*, border-*, ring-*, etc.)          */
+/* ============================================================ */
+
+@theme {
+  /* Paper + ink */
+  --color-paper: #FFFFFF;
+  --color-paper-off: #F6F4EF;
+  --color-paper-deep: #F0EDE6;
+  --color-paper-recessed: #E6E2D8;
+  --color-ink: #0B0B0E;
+  --color-ink-soft: #2A2A30;
+  --color-ink-faint: #6B6B72;
+  --color-rule: #E6E2D8;
+
+  /* Deep blues (primary grounding) */
+  --color-navy: #0A2C5F;
+  --color-navy-deep: #061A3D;
+  --color-navy-soft: #1A3D75;
+
+  /* Vibrant orange (primary accent) */
+  --color-orange: #FF6B35;
+  --color-orange-bright: #FF8451;
+  --color-orange-deep: #E45528;
+
+  /* Signal green (secondary accent + interactive states) */
+  --color-volt: #006747;
+  --color-volt-deep: #00513A;
+  --color-volt-soft: #2F8B6C;
+
+  /* Warm sand / cream (warm light accent + hairlines) */
+  --color-amber: #CFC493;
+  --color-amber-deep: #B5A971;
+  --color-amber-wash: #F3EFE0;
+
+  /* Supporting hues */
+  --color-teal: #3DC2C6;
+  --color-pink: #FFB5C2;
+  --color-pink-deep: #F088A0;
+  --color-butter: #FFD23F;
+  --color-emerald: #1F9AA0;
+
+  /* Type stack */
+  --font-display: "Inter Tight", "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica", "Arial", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Brutalist display scale (clamp-based, fluid) */
+  --text-display-sm: clamp(40px, 5vw, 72px);
+  --text-display-sm--line-height: 0.95;
+  --text-display-sm--letter-spacing: -0.035em;
+
+  --text-display-md: clamp(56px, 8vw, 128px);
+  --text-display-md--line-height: 0.92;
+  --text-display-md--letter-spacing: -0.04em;
+
+  --text-display-lg: clamp(72px, 12vw, 184px);
+  --text-display-lg--line-height: 0.88;
+  --text-display-lg--letter-spacing: -0.045em;
+
+  --text-display-xl: clamp(80px, 16vw, 240px);
+  --text-display-xl--line-height: 0.85;
+  --text-display-xl--letter-spacing: -0.05em;
+
+  /* Easing + animation tokens (v4 namespace) */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-fade-in-up: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-in-right: slide-in-right 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ----- Base layer ----- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  ::selection {
+    background: var(--color-orange);
+    color: white;
+  }
+
+  /* Default: corner-sharp everything */
+  button,
+  [role="button"],
+  a {
+    border-radius: 0;
+  }
+}
+
+/* ============================================================ */
+/*  Custom utilities                                             */
+/* ============================================================ */
+
+/* Hero mask cutout — asymmetric petal revealing the mesh gradient */
+.mask-petal {
+  clip-path: polygon(
+    52% 0%,
+    90% 18%,
+    100% 56%,
+    78% 100%,
+    30% 96%,
+    0% 64%,
+    12% 22%
+  );
+}
+
+/* Mesh gradient backdrops (used inside .mask-petal and section accents) */
+.mesh-warm {
+  background:
+    radial-gradient(40% 50% at 18% 22%, rgba(255, 107, 53, 0.95), transparent 70%),
+    radial-gradient(45% 55% at 82% 28%, rgba(255, 181, 194, 0.95), transparent 70%),
+    radial-gradient(60% 60% at 40% 80%, rgba(61, 194, 198, 0.85), transparent 70%),
+    linear-gradient(135deg, #FF6B35 0%, #FFB5C2 50%, #3DC2C6 100%);
+}
+
+.mesh-deep {
+  background:
+    radial-gradient(50% 60% at 20% 25%, rgba(10, 44, 95, 0.92), transparent 70%),
+    radial-gradient(45% 60% at 80% 75%, rgba(255, 107, 53, 0.55), transparent 70%),
+    radial-gradient(55% 55% at 60% 30%, rgba(0, 103, 71, 0.45), transparent 70%),
+    linear-gradient(180deg, #0A2C5F 0%, #061A3D 100%);
+}
+
+.mesh-volt {
+  background:
+    radial-gradient(45% 55% at 22% 28%, rgba(0, 103, 71, 0.75), transparent 70%),
+    radial-gradient(55% 55% at 78% 72%, rgba(207, 196, 147, 0.85), transparent 70%),
+    linear-gradient(135deg, #006747 0%, #CFC493 100%);
+}
+
+/* Subtle paper grain background detail for hero / sections */
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255, 107, 53, 0.05), transparent 35%),
+    radial-gradient(circle at 88% 18%, rgba(255, 181, 194, 0.08), transparent 35%),
+    radial-gradient(circle at 50% 92%, rgba(0, 103, 71, 0.06), transparent 35%);
+  pointer-events: none;
+}
+
+/* ============================================================ */
+/*  Reveal-on-scroll classes (driven by useReveal hook)         */
+/* ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s var(--ease-out-soft),
+    transform 0.7s var(--ease-out-soft);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s var(--ease-out-soft),
+    transform 0.6s var(--ease-out-soft);
+}
+
+.reveal-stagger.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 60ms; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 120ms; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 180ms; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 240ms; }
+.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 300ms; }
+.reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 360ms; }
+.reveal-stagger.is-visible > *:nth-child(8) { transition-delay: 420ms; }
+.reveal-stagger.is-visible > *:nth-child(9) { transition-delay: 480ms; }
+.reveal-stagger.is-visible > *:nth-child(10) { transition-delay: 540ms; }
+
+/* ============================================================ */
+/*  Sophisticated card hover (signal-green border + sand dot)   */
+/* ============================================================ */
+
+.card-hover {
+  position: relative;
+  transition:
+    background 200ms var(--ease-in-out-soft),
+    border-color 250ms var(--ease-in-out-soft),
+    transform 250ms var(--ease-out-soft);
+}
+
+.card-hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-volt);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 280ms var(--ease-out-soft);
+}
+
+.card-hover::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-amber);
+  opacity: 0;
+  transition: opacity 280ms var(--ease-out-soft);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-ink) !important;
+  background: var(--color-paper) !important;
+}
+
+.card-hover:hover::before {
+  transform: scaleY(1);
+}
+
+.card-hover:hover::after {
+  opacity: 1;
+}
+
+/* Subtle underline animation for nav links */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--color-amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms var(--ease-out-soft);
+}
+.nav-underline:hover::after,
+.nav-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ============================================================ */
+/*  Reduced motion                                               */
+/* ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
