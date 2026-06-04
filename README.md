@@ -19,18 +19,7 @@ splash.
 - **Recharts** — editorial chart wrapper with no grid lines, no axis lines, no default tooltips
 - Google Fonts: **Inter Tight** (display), **Inter** (body), **JetBrains Mono** (eyebrow / labels)
 
-## Run
 
-```bash
-npm install
-npm run dev        # http://127.0.0.1:5180
-```
-
-## Build
-
-```bash
-npm run build
-npm run preview    # http://127.0.0.1:5180
 ```
 
 ## Deploy
