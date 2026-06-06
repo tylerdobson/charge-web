@@ -1,4 +1,4 @@
-# Charge Frontier 2026
+# ChargeWeb
 
 An interactive, multi-page **market-expansion strategy report** for a fictional EV
 fast-charging network, built as a front-end portfolio piece. Premium editorial layout,
